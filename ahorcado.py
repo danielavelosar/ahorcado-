@@ -1,6 +1,6 @@
 import random
-from typing import Dict
-from os import system
+from typing import Dict, Match
+from os import replace, system
 def draw():
     print(r"""\
 
@@ -28,52 +28,46 @@ def get_word():
     with open("./archivos/data.txt","r",encoding=('utf-8')) as f:
         words = []
         for word in f:
+            word.replace('\n','')
             words.append(word) 
         position = random.randint(0, (len(words)-1))
         return words[position]
-def letters_choice(word, letters_chosen = []):
-    new_word = word
-    while len(new_word) >= 0:
-        print(word)
+def letters_choice(word, lines):
+    while word != lines :
         letter_chosen = input("ingresa la letra = ")
-        letters_chosen.append(letter_chosen)
-        print(f'letters= {letters_chosen}')
-        letter_match = list(map(lambda letter : letter == letter_chosen, word))
-        new_word = list((filter(lambda letter : letter == letter_chosen, word)))
-        verify_word(new_word, letter_match, letters_chosen)
+        i = 0
+        for letter in word:
+            if letter_chosen == letter:
+                lines[i] = letter_chosen    
+            i += 1
+        print(''.join(lines))
+        if letter_chosen not in word:
+            print('inténtalo otra vez')    
+        
+    print('ganaste!')    
         
            
 
 
 
 
-def verify_word(word, letter_match, letters_chosen):
-    word_dict = dict(filter(lambda letter : letter, enumerate(word)))
-    positions=[]
-    for letter_chosen in letters_chosen:
-        for keys, values in word_dict.items():
-            if letter_chosen == values:
-                positions.append(keys) 
-        printing = [] 
-        
-    for letter in letter_match:
-        if letter:
-            for position in positions:
-                printing.append(word_dict.get(position))
-                positions.remove(position)
-        printing.append("_")
-        
-    print(" ".join(printing))
+                
+   
     
     
     
     
 def screen():
     print('bienvenido a ahorcado!')
-    word = get_word()
+    word = list(get_word())
+    word.pop(len(word)-1)
+    print(word)
     #word_dict ={letter for letter in sorted(enumerate(word))}
     #print(word_dict)
-    letters_choice(word)
+    lines = ['_']*len(word)
+    print(lines[0:2])
+    print(''.join(lines))
+    letters_choice(word, lines)
     print('adivina la letra')
     #draw()
 
